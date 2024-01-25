@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      
+      <!-- End Header -->
+
+     
+      <!-- Main -->
+      <main class="main-container">
+        <div class="main-title">
+        </div>
+
+        <div class="main-cards">
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>Vendas Ventury</h3>
+              <span class="material-icons-outlined">inventory_2</span>
+              <button onclick="incrementQuantity('ventury')">+</button>
+              <button onclick="decrementQuantity('ventury')">-</button>
+            </div>
+            <h1 id="ventury-quantity">5</h1>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>Vendas M24</h3>
+              <span class="material-icons-outlined">category</span>
+              <button onclick="incrementQuantity('m24')">+</button>
+              <button onclick="decrementQuantity('m24')">-</button>
+            </div>
+            <h1 id="m24-quantity">0</h1>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <h3>Recorde de vendas</h3>
+              <span class="material-icons-outlined">groups</span>
+              <button onclick="incrementQuantity('recorde')">+</button>
+              <button onclick="decrementQuantity('recorde')">-</button>
+            </div>
+            <h1 id="recorde-quantity">36</h1>
+          </div>
+
+          <div class="card" id="lastCard">
+            <div class="card-inner">
+              <h3></h3>
+              <span id="lastCardDateTime"></span>
+              <a href="https://boataxa.com.br/dolar-comercial-importacao" moeda="220" type="Comercial" name="boataxa_hoje">Dólar Comercial</a> <script async src="https://boataxa.com.br/Api/Scripts/boataxa_hoje.js"></script>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts">
+
+          <div class="charts-card">
+            <h2 class="chart-title">Vendas da Semana</h2>
+            <div id="bar-chart"></div>
+          </div>
+//<!--
+          <div class="charts-card">
+            <h2 class="chart-title">Vendas do dia</h2>
+            <div id="area-chart"></div>
+          </div>
+//
+        </div>
+      </main>
+      <!-- End Main -->
+
+    </div>
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+      // SIDEBAR TOGGLE
+      let sidebarOpen = false;
+      const sidebar = document.getElementById('sidebar');
+
+      function openSidebar() {
+        if (!sidebarOpen) {
+          sidebar.classList.add('sidebar-responsive');
+          sidebarOpen = true;
+        }
+      }
+
+      function closeSidebar() {
+        if (sidebarOpen) {
+          sidebar.classList.remove('sidebar-responsive');
+          sidebarOpen = false;
+        }
+      }
+
+      // ---------- CHARTS ----------
+
+      // BAR CHART
+      const barChartOptions = {
+        series: [
+          {
+            data: [21, 17, 24, 9, 0],
+            name: 'vendas',
+          },
+        ],
+        chart: {
+          type: 'bar',
+          background: 'transparent',
+          height: 350,
+          toolbar: {
+            show: false,
+          },
+        },
+        colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3'],
+        plotOptions: {
+          bar: {
+            distributed: true,
+            borderRadius: 4,
+            horizontal: false,
+            columnWidth: '40%',
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        fill: {
+          opacity: 1,
+        },
+        grid: {
+          borderColor: '#55596e',
+          yaxis: {
+            lines: {
+              show: true,
+            },
+          },
+          xaxis: {
+            lines: {
+              show: true,
+            },
+          },
+        },
+        legend: {
+          labels: {
+            colors: '#f5f7ff',
+          },
+          show: true,
+          position: 'top',
+        },
+        stroke: {
+          colors: ['transparent'],
+          show: true,
+          width: 2,
+        },
+        tooltip: {
+          shared: true,
+          intersect: false,
+          theme: 'dark',
+        },
+        xaxis: {
+          categories: ['SEGUNDA', 'TERÇA', 'QUARTA', 'QUINTA', 'SEXTA'],
+          title: {
+            style: {
+              color: '#f5f7ff',
+            },
+          },
+          axisBorder: {
+            show: true,
+            color: '#55596e',
+          },
+          axisTicks: {
+            show: true,
+            color: '#55596e',
+          },
+          labels: {
+            style: {
+              colors: '#f5f7ff',
+            },
+          },
+        },
+        yaxis: {
+          title: {
+            text: 'Count',
+            style: {
+              color: '#f5f7ff',
+            },
+          },
+          axisBorder: {
+            color: '#55596e',
+            show: true,
+          },
+          axisTicks: {
+            color: '#55596e',
+            show: true,
+          },
+          labels: {
+            style: {
+              colors: '#f5f7ff',
+            },
+          },
+        },
+      };
+
+      const barChart = new ApexCharts(
+        document.querySelector('#bar-chart'),
+        barChartOptions
+      );
+      barChart.render();
+
+      // AREA CHART
+      const areaChartOptions = {
+        series: [
+          {
+            name: 'Vendas',
+            data: [ 0, 391],
+          },
+        ],
+        chart: {
+          type: 'area',
+          background: 'transparent',
+          height: 350,
+          stacked: false,
+          toolbar: {
+            show: false,
+          },
+        },
+        colors: ['#00ab57', '#d50000'],
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        dataLabels: {
+          enabled: false,
+        },
+        fill: {
+          gradient: {
+            opacityFrom: 0.4,
+            opacityTo: 0.1,
+            shadeIntensity: 1,
+            stops: [0, 100],
+            type: 'vertical',
+          },
+          type: 'gradient',
+        },
+        grid: {
+          borderColor: '#55596e',
+          yaxis: {
+            lines: {
+              show: true,
+            },
+          },
+          xaxis: {
+            lines: {
+              show: true,
+            },
+          },
+        },
+        legend: {
+          labels: {
+            colors: '#f5f7ff',
+          },
+          show: true,
+          position: 'top',
+        },
+        markers: {
+          size: 6,
+          strokeColors: '#1b2635',
+          strokeWidth: 3,
+        },
+        stroke: {
+          curve: 'smooth',
+        },
+        xaxis: {
+          axisBorder: {
+            color: '#55596e',
+            show: true,
+          },
+          axisTicks: {
+            color: '#55596e',
+            show: true,
+          },
+          labels: {
+            offsetY: 5,
+            style: {
+              colors: '#f5f7ff',
+            },
+          },
+        },
+        yaxis: [
+          {
+            title: {
+              text: '',
+              style: {
+                color: '#f5f7ff',
+              },
+            },
+            labels: {
+              style: {
+                colors: ['#f5f7ff'],
+              },
+            },
+          },
+          {
+            opposite: true,
+            title: {
+              text: '',
+              style: {
+                color: '#f5f7ff',
+              },
+            },
+            labels: {
+              style: {
+                colors: ['#f5f7ff'],
+              },
+            },
+          },
+        ],
+        tooltip: {
+          shared: true,
+          intersect: false,
+          theme: 'dark',
+        },
+      };
+
+      const areaChart = new ApexCharts(
+        document.querySelector('#area-chart'),
+        areaChartOptions
+      );
+      areaChart.render();
+
+
+       // Funciones de incremento y decremento
+       function incrementQuantity(cardId) {
+        const quantityElement = document.getElementById(`${cardId}-quantity`);
+        const currentQuantity = parseInt(quantityElement.innerText);
+        quantityElement.innerText = currentQuantity + 1;
+      }
+
+      function decrementQuantity(cardId) {
+        const quantityElement = document.getElementById(`${cardId}-quantity`);
+        const currentQuantity = parseInt(quantityElement.innerText);
+
+        // Asegurarse de que la cantidad no sea negativa
+        if (currentQuantity > 0) {
+          quantityElement.innerText = currentQuantity - 1;
+        }
+      }
+// Função para obter dados do localStorage
+function getQuantityFromLocalStorage(cardId) {
+  const storedQuantity = localStorage.getItem(`${cardId}-quantity`);
+  return storedQuantity ? parseInt(storedQuantity) : 0;
+}
+
+// Função para atualizar a quantidade no HTML e no localStorage
+function updateQuantity(cardId, newQuantity) {
+  const quantityElement = document.getElementById(`${cardId}-quantity`);
+  quantityElement.innerText = newQuantity;
+
+  // Salvar no localStorage
+  localStorage.setItem(`${cardId}-quantity`, newQuantity);
+}
+
+// Funcão de incremento com atualização no localStorage
+function incrementQuantity(cardId) {
+  const currentQuantity = getQuantityFromLocalStorage(cardId);
+  updateQuantity(cardId, currentQuantity + 1);
+}
+
+// Função de decremento com atualização no localStorage
+function decrementQuantity(cardId) {
+  const currentQuantity = getQuantityFromLocalStorage(cardId);
+
+  // Asegurarse de que a quantidade não seja negativa
+  if (currentQuantity > 0) {
+    updateQuantity(cardId, currentQuantity - 1);
+  }
+}
+
+// Carregar quantidades do localStorage ao carregar a página
+document.addEventListener('DOMContentLoaded', function () {
+  const cardIds = ['ventury', 'm24', 'recorde', '25-01-2024'];
+
+  cardIds.forEach(function (cardId) {
+    const currentQuantity = getQuantityFromLocalStorage(cardId);
+    updateQuantity(cardId, currentQuantity);
+  });
+});
+
+// Função para atualizar a data e hora em tempo real
+function updateDateTime() {
+  const dateTimeElement = document.getElementById('lastCardDateTime');
+  const currentDateTime = new Date();
+
+  // Atualizar o texto do elemento com a nova data e hora
+  dateTimeElement.innerText = formatDateTime(currentDateTime);
+}
+
+// Função para formatar a data e hora no formato desejado (DD/MM/YYYY HH:mm:ss)
+function formatDateTime(dateTime) {
+  const day = String(dateTime.getDate()).padStart(2, '0');
+  const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+  const year = dateTime.getFullYear();
+  const hours = String(dateTime.getHours()).padStart(2, '0');
+  const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+  const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+// Atualizar a data e hora a cada segundo
+setInterval(updateDateTime, 1000);
+
+// Carregar a data e hora atual ao carregar a página
+document.addEventListener('DOMContentLoaded', function () {
+  updateDateTime();
+});
+
+
+    </script>
+  </body>
+</html>
