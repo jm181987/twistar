@@ -74,12 +74,18 @@
             <h2 class="chart-title">Vendas da Semana</h2>
             <div id="bar-chart"></div>
           </div>
-//<!--
-          <div class="charts-card">
-            <h2 class="chart-title">Vendas do dia</h2>
-            <div id="area-chart"></div>
-          </div>
-//
+
+         
+
+            <div id="sales-chart"></div>
+
+            <!-- Botones para aumentar/disminuir las ventas por supervisor -->
+            <div id="sales-chart"></div>
+            <button id="reset-button" onclick="resetValues()">Resetear Valores</button>
+            <button id="clear-storage-button" onclick="clearLocalStorage()">Limpiar Local Storage</button>
+          
+          
+
         </div>
       </main>
       <!-- End Main -->
@@ -427,7 +433,117 @@ document.addEventListener('DOMContentLoaded', function () {
   updateDateTime();
 });
 
+const supervisorsData = JSON.parse(localStorage.getItem('supervisorsData')) || {
+      Rodrigo: 0,
+      Amanda: 0,
+      Caroline: 0,
+      Ricardo: 0,
+      Camila: 0,
+      Diogo: 0,
+      Vero: 0,
+      Maria: 0,
+      Tomas: 0,
+      Lucas: 0,
+      Alexandre: 0,
+      // Agrega más supervisores según sea necesario
+    };
 
+    function generateChartData() {
+      const labels = Object.keys(supervisorsData);
+      const data = Object.values(supervisorsData);
+
+      return { labels, data };
+    }
+
+    const chartOptions = {
+      chart: {
+        type: 'bar',
+      },
+      series: [{
+        name: 'Ventas',
+        data: generateChartData().data,
+      }],
+      xaxis: {
+        categories: generateChartData().labels,
+      },
+    };
+
+    const salesChart = new ApexCharts(document.querySelector("#sales-chart"), chartOptions);
+    salesChart.render();
+
+    function incrementSales(supervisor) {
+      supervisorsData[supervisor]++;
+      updateChartData();
+      saveDataToLocalStorage();
+    }
+
+    function decrementSales(supervisor) {
+      if (supervisorsData[supervisor] > 0) {
+        supervisorsData[supervisor]--;
+        updateChartData();
+        saveDataToLocalStorage();
+      }
+    }
+
+    function updateChartData() {
+      const newChartData = generateChartData();
+      salesChart.updateOptions({
+        xaxis: {
+          categories: newChartData.labels,
+        },
+      });
+      salesChart.updateSeries([{ data: newChartData.data }]);
+    }
+
+    function saveDataToLocalStorage() {
+      localStorage.setItem('supervisorsData', JSON.stringify(supervisorsData));
+    }
+
+    function resetValues() {
+      const confirmReset = confirm("¿Estás seguro de que deseas restablecer los valores?");
+      if (confirmReset) {
+        const defaultValues = Object.fromEntries(Object.keys(supervisorsData).map(supervisor => [supervisor, 15]));
+        supervisorsData = defaultValues;
+        updateChartData();
+        saveDataToLocalStorage();
+      }
+    }
+
+    function clearLocalStorage() {
+      const confirmClear = confirm("¿Estás seguro de que deseas limpiar el Local Storage?");
+      if (confirmClear) {
+        localStorage.removeItem('supervisorsData');
+        // Puedes reiniciar el gráfico o realizar cualquier otra acción necesaria aquí.
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const supervisorContainer = document.querySelector("#sales-chart");
+
+      Object.keys(supervisorsData).forEach(function (supervisor) {
+        const container = document.createElement('div');
+        container.className = 'supervisor-container';
+
+        const nameElement = document.createElement('div');
+        nameElement.className = 'supervisor-name';
+        nameElement.innerText = supervisor;
+        container.appendChild(nameElement);
+
+        const incrementButton = document.createElement('button');
+        incrementButton.innerText = '+';
+        incrementButton.onclick = function () { incrementSales(supervisor); };
+
+        const decrementButton = document.createElement('button');
+        decrementButton.innerText = '-';
+        decrementButton.onclick = function () { decrementSales(supervisor); };
+
+        container.appendChild(nameElement);
+        container.appendChild(incrementButton);
+        container.appendChild(decrementButton);
+
+        supervisorContainer.appendChild(container);
+      });
+    });
     </script>
   </body>
 </html>

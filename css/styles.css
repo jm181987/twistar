@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #1d2634;
-  color: #9e9ea4;
+  color: #ffffff;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -36,7 +36,23 @@ body {
   display: none;
 }
 
+.supervisor-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
+.supervisor-name {
+  margin-right: 10px;
+}
+
+.control-buttons button {
+  font-size: 12px;
+  padding: 5px 10px;
+  margin: 5px;
+  
+}
+</style>
 
 /* ---------- MAIN ---------- */
 
@@ -116,6 +132,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 
 /* ---------- MEDIA QUERIES ---------- */
 
